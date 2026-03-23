@@ -1,3 +1,4 @@
 node_modules
 .env
 README_Credentials.md
+dist
