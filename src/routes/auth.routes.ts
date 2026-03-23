@@ -13,7 +13,7 @@ router.post('/refresh', refreshToken);
 router.get('/me', authenticate, getMe);
 router.get('/test', (_req, res) => {
     console.log("DATABASE URI:", process.env.MONGODB_URI); // Debug log
-  res.json({ message: 'Auth route is working!' });
+  res.json({ message: 'Auth route is working!', databaseUri: process.env.MONGODB_URI });
 });
 
 export default router;
