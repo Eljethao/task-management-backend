@@ -4,18 +4,32 @@ import { Task } from '../models/Task';
 import { AppError } from '../middleware/errorHandler';
 import { AuthRequest } from '../types';
 
+const blockedReasonValues = [
+  'Waiting for API',
+  'Waiting for Confirmation',
+  'Tracking',
+  'Postponed',
+  'Continue Next Week',
+  'Waiting',
+] as const;
+
 const createSchema = z.object({
   projectId: z.string().min(1, 'projectId is required'),
   epicId: z.string().optional(),
+  teamId: z.string().optional(),
+  sprintId: z.string().optional(),
   title: z.string().min(1).max(500),
   description: z.string().optional(),
   status: z.enum(['To Do', 'In Progress', 'Code Review', 'Testing', 'Done']).optional(),
   priority: z.enum(['Low', 'Medium', 'High', 'Critical']).optional(),
+  priorityLevel: z.union([z.literal(1), z.literal(2), z.literal(3)]).nullable().optional(),
+  blockedReason: z.enum(blockedReasonValues).nullable().optional(),
   assigneeId: z.string().optional(),
   storyPoints: z.number().min(0).max(100).optional(),
   tags: z.array(z.string()).optional(),
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
+  notes: z.string().optional(),
   githubPrLink: z.string().url().optional(),
 });
 
@@ -34,11 +48,14 @@ const PRIVILEGED_ROLES = ['Admin', 'Project Manager'];
 
 export const getTasks = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { projectId, status, assigneeId } = req.query;
+    const { projectId, status, assigneeId, teamId, sprintId, blockedReason } = req.query;
     const filter: Record<string, unknown> = {};
 
     if (projectId) filter.projectId = projectId;
     if (status) filter.status = status;
+    if (teamId) filter.teamId = teamId;
+    if (sprintId) filter.sprintId = sprintId;
+    if (blockedReason) filter.blockedReason = blockedReason;
 
     const isPrivileged = PRIVILEGED_ROLES.includes(req.user?.role ?? '');
 

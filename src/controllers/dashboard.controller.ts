@@ -1,9 +1,16 @@
 import { Response, NextFunction } from 'express';
+import { Types } from 'mongoose';
 import { Task } from '../models/Task';
 import { Project } from '../models/Project';
 import { Standup } from '../models/Standup';
 import { User } from '../models/User';
 import { AuthRequest } from '../types';
+
+async function projectIdsForMember(memberId: string): Promise<Types.ObjectId[]> {
+  const oid = new Types.ObjectId(memberId);
+  const docs = await Project.find({ $or: [{ ownerId: oid }, { memberIds: oid }] }).select('_id').lean();
+  return docs.map((d) => d._id as Types.ObjectId);
+}
 
 // ─── Metrics ──────────────────────────────────────────────────────────────────
 
@@ -13,8 +20,14 @@ export const getDashboardMetrics = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { projectId } = req.query;
-    const filter = projectId ? { projectId } : {};
+    const { projectId, memberId } = req.query;
+    let filter: Record<string, unknown> = {};
+    if (memberId) {
+      const ids = await projectIdsForMember(String(memberId));
+      filter = { projectId: { $in: ids } };
+    } else if (projectId) {
+      filter = { projectId };
+    }
 
     const [tasksByStatus, totalTasks, totalUsers] = await Promise.all([
       Task.aggregate([
@@ -40,12 +53,16 @@ export const getDashboardMetrics = async (
 // ─── Project Portfolio Overview ───────────────────────────────────────────────
 
 export const getProjectOverview = async (
-  _req: AuthRequest,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const projects = await Project.find({}).lean();
+    const { memberId } = req.query;
+    const projectFilter = memberId
+      ? { $or: [{ ownerId: new Types.ObjectId(String(memberId)) }, { memberIds: new Types.ObjectId(String(memberId)) }] }
+      : {};
+    const projects = await Project.find(projectFilter).lean();
     const projectIds = projects.map((p: any) => p._id);
 
     const taskStats = await Task.aggregate([
@@ -118,13 +135,19 @@ export const getProjectOverview = async (
 // ─── Team Workload (with peak period) ────────────────────────────────────────
 
 export const getTeamWorkload = async (
-  _req: AuthRequest,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
+    const { memberId } = req.query;
+    const taskMatch: Record<string, unknown> = { status: { $ne: 'Done' }, assigneeId: { $ne: null } };
+    if (memberId) {
+      const ids = await projectIdsForMember(String(memberId));
+      taskMatch.projectId = { $in: ids };
+    }
     const workload = await Task.aggregate([
-      { $match: { status: { $ne: 'Done' }, assigneeId: { $ne: null } } },
+      { $match: taskMatch },
       {
         $group: {
           _id: '$assigneeId',
@@ -151,10 +174,9 @@ export const getTeamWorkload = async (
     ]);
 
     // Peak workload: week with the most task deadlines
-    const upcomingTasks = await Task.find(
-      { status: { $ne: 'Done' }, endDate: { $ne: null, $gte: new Date() } },
-      { endDate: 1 }
-    ).lean();
+    const peakMatch: Record<string, unknown> = { status: { $ne: 'Done' }, endDate: { $ne: null, $gte: new Date() } };
+    if (memberId) peakMatch.projectId = taskMatch.projectId;
+    const upcomingTasks = await Task.find(peakMatch, { endDate: 1 }).lean();
 
     const weekMap: Record<string, number> = {};
     for (const task of upcomingTasks) {

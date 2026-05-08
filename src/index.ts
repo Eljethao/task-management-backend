@@ -18,6 +18,11 @@ import taskRoutes from './routes/task.routes';
 import standupRoutes from './routes/standup.routes';
 import webhookRoutes from './routes/webhook.routes';
 import dashboardRoutes from './routes/dashboard.routes';
+import teamRoutes from './routes/team.routes';
+import sprintRoutes from './routes/sprint.routes';
+import initiativeRoutes from './routes/initiative.routes';
+import importRoutes from './routes/import.routes';
+import reportRoutes from './routes/report.routes';
 
 dotenv.config();
 
@@ -59,6 +64,11 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/standups', standupRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/teams', teamRoutes);
+app.use('/api/sprints', sprintRoutes);
+app.use('/api/initiatives', initiativeRoutes);
+app.use('/api/import', importRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Error handling
 app.use(notFound);

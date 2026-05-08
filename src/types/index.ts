@@ -6,7 +6,28 @@ export type UserRole = 'Admin' | 'Developer' | 'Project Manager' | 'Tester' | 'U
 export type TaskStatus = 'To Do' | 'In Progress' | 'Code Review' | 'Testing' | 'Done';
 export type TaskPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 
+export type BlockedReason =
+  | 'Waiting for API'
+  | 'Waiting for Confirmation'
+  | 'Tracking'
+  | 'Postponed'
+  | 'Continue Next Week'
+  | 'Waiting';
+
+export const BLOCKED_REASONS: BlockedReason[] = [
+  'Waiting for API',
+  'Waiting for Confirmation',
+  'Tracking',
+  'Postponed',
+  'Continue Next Week',
+  'Waiting',
+];
+
+export type PriorityLevel = 1 | 2 | 3;
+
 export type ProjectStatus = 'Planning' | 'Active' | 'On Hold' | 'Completed' | 'Archived';
+
+export type InitiativeStatus = 'Planned' | 'In Progress' | 'Done' | 'On Hold';
 
 export interface JwtPayload {
   userId: string;
