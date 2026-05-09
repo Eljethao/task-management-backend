@@ -6,7 +6,7 @@ const router: IRouter = Router();
 
 router.use(authenticate);
 
-router.get('/', authorize('Admin', 'Project Manager'), getUsers);
+router.get('/', getUsers);
 router.post('/', authorize('Admin', 'Project Manager'), createUser);
 router.get('/:id', getUserById);
 router.patch('/:id', updateUser);
