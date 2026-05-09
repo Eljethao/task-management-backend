@@ -13,8 +13,8 @@ const router: IRouter = Router();
 router.use(authenticate);
 
 router.get('/', getInitiatives);
-router.post('/', authorize('Admin', 'Project Manager', 'Lead Developer'), createInitiative);
-router.patch('/:id', authorize('Admin', 'Project Manager', 'Lead Developer'), updateInitiative);
+router.post('/', authorize('Admin', 'Project Manager', 'Lead Team'), createInitiative);
+router.patch('/:id', authorize('Admin', 'Project Manager', 'Lead Team'), updateInitiative);
 router.delete('/:id', authorize('Admin'), deleteInitiative);
 router.post('/:id/notes', addNote);
 

@@ -29,7 +29,7 @@ const userSchema = new Schema<IUser>(
     passwordHash: { type: String, required: true },
     role: {
       type: String,
-      enum: ['Admin', 'Developer', 'Project Manager', 'Tester', 'UXUI', 'Lead Developer'],
+      enum: ['Admin', 'Developer', 'Project Manager', 'Tester', 'UXUI', 'Lead Team'],
       default: 'Developer',
       index: true,
     },

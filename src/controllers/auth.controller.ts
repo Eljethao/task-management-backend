@@ -9,7 +9,7 @@ const registerSchema = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email(),
   password: z.string().min(6),
-  role: z.enum(['Admin', 'Developer', 'Project Manager', 'Tester', 'UXUI', 'Lead Developer']).optional(),
+  role: z.enum(['Admin', 'Developer', 'Project Manager', 'Tester', 'UXUI', 'Lead Team']).optional(),
   department: z.string().optional(),
 });
 

@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { Types } from 'mongoose';
 
-export type UserRole = 'Admin' | 'Developer' | 'Project Manager' | 'Tester' | 'UXUI' | 'Lead Developer';
+export type UserRole = 'Admin' | 'Developer' | 'Project Manager' | 'Tester' | 'UXUI' | 'Lead Team';
 
 export type TaskStatus = 'To Do' | 'In Progress' | 'Code Review' | 'Testing' | 'Done';
 export type TaskPriority = 'Low' | 'Medium' | 'High' | 'Critical';

@@ -22,9 +22,9 @@ const USERS = [
 
   // ── The Rendering Crew ──────────────────────────────────────────────────
   {
-    name: 'Xi Vang',          // ຊີ ວ່າງ
+    name: 'See Vang',         // ຊີ ວ່າງ
     email: 'xi.vang@taskflow.com',
-    role: 'Lead Developer' as const,
+    role: 'Lead Team' as const,
     department: 'The Rendering Crew',
   },
   {
@@ -50,7 +50,7 @@ const USERS = [
   {
     name: 'Sulichai Vilasid', // ສຸລິໄຊ ວິລະສິດ
     email: 'sulichai.vilasid@taskflow.com',
-    role: 'Lead Developer' as const,
+    role: 'Lead Team' as const,
     department: 'AI VIBE CHECK',
   },
   {
@@ -82,7 +82,7 @@ const USERS = [
   {
     name: 'Khamphoy',         // ຄຳພອຍ
     email: 'khamphoy@taskflow.com',
-    role: 'UXUI' as const,
+    role: 'Lead Team' as const,
     department: 'UX/UI',
   },
   {
@@ -114,7 +114,7 @@ const USERS = [
   {
     name: 'Noy',
     email: 'noy@taskflow.com',
-    role: 'Tester' as const,
+    role: 'Lead Team' as const,
     department: 'Testing',
   },
   {
@@ -128,7 +128,7 @@ const USERS = [
   {
     name: 'Lenglee',          // ເລັ່ງລີ
     email: 'lenglee@taskflow.com',
-    role: 'Developer' as const,
+    role: 'Lead Team' as const,
     department: 'Backend',
   },
   {
