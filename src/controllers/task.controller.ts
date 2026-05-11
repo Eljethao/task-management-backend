@@ -70,6 +70,7 @@ export const getTasks = async (req: AuthRequest, res: Response, next: NextFuncti
     const tasks = await Task.find(filter)
       .populate('assigneeId', 'name email')
       .populate('reporterId', 'name email')
+      .populate('projectId', 'name')
       .sort({ status: 1, order: 1 });
 
     res.json({ success: true, data: { tasks } });
