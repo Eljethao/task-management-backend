@@ -19,6 +19,6 @@ router.post('/', createStandup);
 router.patch('/:id', updateStandup);
 
 router.get('/:id/comments', getStandupComments);
-router.post('/:id/comments', authorize('Admin', 'Project Manager'), addStandupComment);
+router.post('/:id/comments', authorize('Admin', 'Project Manager', 'Lead Team'), addStandupComment);
 
 export default router;

@@ -14,8 +14,8 @@ router.use(authenticate);
 
 router.get('/report/weekly', getWeeklyReport);
 router.get('/', getSprints);
-router.post('/', authorize('Admin', 'Project Manager'), createSprint);
-router.patch('/:id', authorize('Admin', 'Project Manager'), updateSprint);
-router.delete('/:id', authorize('Admin'), deleteSprint);
+router.post('/', authorize('Admin', 'Project Manager', 'Lead Team'), createSprint);
+router.patch('/:id', authorize('Admin', 'Project Manager', 'Lead Team'), updateSprint);
+router.delete('/:id', authorize('Admin', 'Project Manager', 'Lead Team'), deleteSprint);
 
 export default router;
