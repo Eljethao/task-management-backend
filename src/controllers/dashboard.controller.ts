@@ -227,3 +227,48 @@ export const getBlockers = async (
     next(err);
   }
 };
+
+// ─── Top performers (most Done tasks by completion period) ───────────────────
+
+function rangeStart(period: 'today' | 'week' | 'month'): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  if (period === 'today') return d;
+  if (period === 'week') { d.setDate(d.getDate() - d.getDay()); return d; }  // Sunday
+  d.setDate(1);
+  return d;
+}
+
+export const getTopPerformers = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const period = (req.query.period as 'today' | 'week' | 'month') ?? 'today';
+    const since = rangeStart(period);
+
+    const top = await Task.aggregate([
+      { $match: { status: 'Done', completedAt: { $gte: since } } },
+      { $group: { _id: '$assigneeId', count: { $sum: 1 }, storyPoints: { $sum: '$storyPoints' } } },
+      { $sort: { count: -1, storyPoints: -1 } },
+      { $limit: 5 },
+      { $lookup: { from: 'users', localField: '_id', foreignField: '_id', as: 'user' } },
+      { $unwind: '$user' },
+      { $project: {
+          _id: 0,
+          userId: '$_id',
+          name: '$user.name',
+          email: '$user.email',
+          department: '$user.department',
+          role: '$user.role',
+          count: 1,
+          storyPoints: 1,
+      } },
+    ]);
+
+    res.json({ success: true, data: { period, since, performers: top } });
+  } catch (err) {
+    next(err);
+  }
+};

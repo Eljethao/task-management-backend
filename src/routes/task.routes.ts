@@ -20,6 +20,6 @@ router.post('/', authorize('Admin', 'Project Manager', 'Developer', 'Lead Team',
 router.patch('/:id', updateTask);
 router.patch('/:id/status', updateTaskStatus);
 router.patch('/reorder', authorize('Admin', 'Project Manager', 'Developer', 'Lead Team', 'Tester', 'UXUI'), reorderTasks);
-router.delete('/:id', authorize('Admin', 'Project Manager'), deleteTask);
+router.delete('/:id', authorize('Admin', 'Project Manager', 'Lead Team', 'Developer'), deleteTask);
 
 export default router;

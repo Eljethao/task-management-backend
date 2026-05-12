@@ -48,7 +48,7 @@ const PRIVILEGED_ROLES = ['Admin', 'Project Manager'];
 
 export const getTasks = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { projectId, status, assigneeId, teamId, sprintId, blockedReason } = req.query;
+    const { projectId, status, assigneeId, teamId, sprintId, blockedReason, startDate, endDate } = req.query;
     const filter: Record<string, unknown> = {};
 
     if (projectId) filter.projectId = projectId;
@@ -56,6 +56,14 @@ export const getTasks = async (req: AuthRequest, res: Response, next: NextFuncti
     if (teamId) filter.teamId = teamId;
     if (sprintId) filter.sprintId = sprintId;
     if (blockedReason) filter.blockedReason = blockedReason;
+
+    // Date range — filters by createdAt (when the task was added).
+    if (startDate || endDate) {
+      const range: Record<string, Date> = {};
+      if (startDate) range.$gte = new Date(startDate as string);
+      if (endDate) range.$lte = new Date(endDate as string);
+      filter.createdAt = range;
+    }
 
     const isPrivileged = PRIVILEGED_ROLES.includes(req.user?.role ?? '');
 
@@ -123,8 +131,11 @@ export const updateTask = async (req: AuthRequest, res: Response, next: NextFunc
 export const updateTaskStatus = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const body = statusSchema.parse(req.body);
-    const task = await Task.findByIdAndUpdate(req.params.id, body, { new: true });
+    const task = await Task.findById(req.params.id);
     if (!task) return next(new AppError('Task not found', 404));
+    task.status = body.status;
+    if (typeof body.order === 'number') task.order = body.order;
+    await task.save();  // .save() triggers the pre-save hook that sets/clears completedAt
     res.json({ success: true, data: { task } });
   } catch (err) {
     next(err);
