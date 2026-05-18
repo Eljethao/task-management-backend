@@ -20,7 +20,7 @@ const createSchema = z.object({
   sprintId: z.string().optional(),
   title: z.string().min(1).max(500),
   description: z.string().optional(),
-  status: z.enum(['To Do', 'In Progress', 'Code Review', 'Testing', 'Done']).optional(),
+  status: z.enum(['To Do', 'In Progress', 'Testing', 'Done']).optional(),
   priority: z.enum(['Low', 'Medium', 'High', 'Critical']).optional(),
   priorityLevel: z.union([z.literal(1), z.literal(2), z.literal(3)]).nullable().optional(),
   blockedReason: z.enum(blockedReasonValues).nullable().optional(),
@@ -36,7 +36,7 @@ const createSchema = z.object({
 const updateSchema = createSchema.partial();
 
 const statusSchema = z.object({
-  status: z.enum(['To Do', 'In Progress', 'Code Review', 'Testing', 'Done']),
+  status: z.enum(['To Do', 'In Progress', 'Testing', 'Done']),
   order: z.number().optional(),
 });
 
@@ -58,11 +58,16 @@ export const getTasks = async (req: AuthRequest, res: Response, next: NextFuncti
     if (blockedReason) filter.blockedReason = blockedReason;
 
     // Date range — filters by createdAt (when the task was added).
+    // Unfinished tasks (status !== 'Done') always carry over and remain
+    // visible inside any date range, so prior-week work appears under "This Week".
     if (startDate || endDate) {
       const range: Record<string, Date> = {};
       if (startDate) range.$gte = new Date(startDate as string);
       if (endDate) range.$lte = new Date(endDate as string);
-      filter.createdAt = range;
+      filter.$or = [
+        { createdAt: range },
+        { status: { $ne: 'Done' } },
+      ];
     }
 
     const isPrivileged = PRIVILEGED_ROLES.includes(req.user?.role ?? '');

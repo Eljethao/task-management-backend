@@ -84,7 +84,7 @@ export const getProjectOverview = async (
       const byStatus = taskMap[pid] ?? {};
       const total      = Object.values(byStatus).reduce((a: number, b: unknown) => a + (b as number), 0);
       const done       = byStatus['Done'] ?? 0;
-      const testing    = (byStatus['Testing'] ?? 0) + (byStatus['Code Review'] ?? 0);
+      const testing    = byStatus['Testing'] ?? 0;
       const inProgress = byStatus['In Progress'] ?? 0;
       const toDo       = byStatus['To Do'] ?? 0;
 

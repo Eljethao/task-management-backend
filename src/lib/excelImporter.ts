@@ -16,7 +16,7 @@ const STATUS_MAP: Record<string, { status: TaskStatus; blockedReason: BlockedRea
   'ເຮັດສຳເລັດ':       { status: 'Done',        blockedReason: null },
   'ກຳລັງເຮັດ':         { status: 'In Progress', blockedReason: null },
   'ຕ້ອງເຮັດ':           { status: 'To Do',       blockedReason: null },
-  'ລໍຖ້າກວດສອບ':     { status: 'Code Review', blockedReason: null },
+  'ລໍຖ້າກວດສອບ':     { status: 'Testing',     blockedReason: null },
   'ຕິດຕາມ':            { status: 'In Progress', blockedReason: 'Tracking' },
   'ລໍຖ້າApi':           { status: 'In Progress', blockedReason: 'Waiting for API' },
   'ລໍຖ້າຄອນເຟີມ':   { status: 'In Progress', blockedReason: 'Waiting for Confirmation' },

@@ -7,7 +7,6 @@ import { TaskStatus, BlockedReason } from '../types';
 const STATUS_LAO: Record<TaskStatus, string> = {
   'To Do': 'ຕ້ອງເຮັດ',
   'In Progress': 'ກຳລັງເຮັດ',
-  'Code Review': 'ລໍຖ້າກວດສອບ',
   'Testing': 'ລໍຖ້າກວດສອບ',
   'Done': 'ເຮັດສຳເລັດ',
 };
