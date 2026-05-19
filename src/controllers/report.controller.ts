@@ -32,14 +32,16 @@ export const getMonthlyReport = async (req: AuthRequest, res: Response, next: Ne
     if (!VALID_PRESETS.includes(preset)) {
       return next(new AppError(`Invalid preset. Must be one of: ${VALID_PRESETS.join(', ')}`, 400));
     }
-    const teamId = req.query.teamId ? String(req.query.teamId) : undefined;
+    const teamId    = req.query.teamId    ? String(req.query.teamId)    : undefined;
+    const assigneeId = req.query.assigneeId ? String(req.query.assigneeId) : undefined;
 
     const { start, end } = resolvePresetRange(preset);
 
     const taskFilter: Record<string, unknown> = {
       createdAt: { $gte: start, $lte: end },
     };
-    if (teamId) taskFilter.teamId = teamId;
+    if (teamId)    taskFilter.teamId    = teamId;
+    if (assigneeId) taskFilter.assigneeId = assigneeId;
 
     const tasks = await Task.find(taskFilter)
       .populate('assigneeId', 'name role')
@@ -108,8 +110,9 @@ export const downloadMonthlyReport = async (req: AuthRequest, res: Response, nex
     if (!VALID_PRESETS.includes(preset)) {
       return next(new AppError(`Invalid preset. Must be one of: ${VALID_PRESETS.join(', ')}`, 400));
     }
-    const teamId = req.query.teamId ? String(req.query.teamId) : undefined;
-    const buf = await exportMonthlyReport(preset, teamId);
+    const teamId     = req.query.teamId     ? String(req.query.teamId)     : undefined;
+    const assigneeId = req.query.assigneeId ? String(req.query.assigneeId) : undefined;
+    const buf = await exportMonthlyReport(preset, teamId, assigneeId);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', `attachment; filename="monthly-report-${preset}.xlsx"`);
     res.send(Buffer.from(buf as ArrayBuffer));

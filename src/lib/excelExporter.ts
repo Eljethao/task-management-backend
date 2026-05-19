@@ -153,13 +153,14 @@ export async function exportWeeklyReport(sprintId: string): Promise<ExcelJS.Buff
 /**
  * Produce an .xlsx for a date-range preset (monthly report).
  */
-export async function exportMonthlyReport(preset: ReportPreset, teamId?: string): Promise<ExcelJS.Buffer> {
+export async function exportMonthlyReport(preset: ReportPreset, teamId?: string, assigneeId?: string): Promise<ExcelJS.Buffer> {
   const { start, end } = resolvePresetRange(preset);
 
   const taskFilter: Record<string, unknown> = {
     createdAt: { $gte: start, $lte: end },
   };
-  if (teamId) taskFilter.teamId = teamId;
+  if (teamId)    taskFilter.teamId    = teamId;
+  if (assigneeId) taskFilter.assigneeId = assigneeId;
 
   const tasks = await Task.find(taskFilter)
     .populate('assigneeId', 'name')
