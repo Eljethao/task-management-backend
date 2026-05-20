@@ -4,7 +4,7 @@ import { User } from '../models/User';
 import { AppError } from '../middleware/errorHandler';
 import { AuthRequest } from '../types';
 
-const ROLES = ['Admin', 'Developer', 'Project Manager', 'Tester', 'UXUI', 'Lead Team'] as const;
+const ROLES = ['Admin', 'Developer', 'Project Manager', 'Tester', 'UXUI', 'Lead Team', 'Sale', 'Marketing', 'Office', 'Finance', 'HR'] as const;
 
 const createSchema = z.object({
   name:       z.string().min(2).max(100),
