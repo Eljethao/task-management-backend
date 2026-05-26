@@ -5,6 +5,10 @@ export interface IStandup extends Document {
   userId: Types.ObjectId;
   projectId: Types.ObjectId;
   date: Date;
+  title?: string;
+  location?: string;
+  attendees?: string;
+  agenda?: string;
   yesterday: string;
   today: string;
   blockers: string;
@@ -17,9 +21,13 @@ const standupSchema = new Schema<IStandup>(
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     projectId: { type: Schema.Types.ObjectId, ref: 'Project', required: true, index: true },
     date: { type: Date, required: true, index: true },
-    yesterday: { type: String, required: true },
-    today: { type: String, required: true },
-    blockers: { type: String, default: '' },
+    title: { type: String, default: '' },
+    location: { type: String, default: '' },
+    attendees: { type: String, default: '' },
+    agenda: { type: String, default: '' },
+    yesterday: { type: String, default: '' }, // Legacy, used for Discussion
+    today: { type: String, default: '' },     // Legacy, used for Action Items
+    blockers: { type: String, default: '' },  // Legacy, used for Next Meeting
   },
   { timestamps: true }
 );
