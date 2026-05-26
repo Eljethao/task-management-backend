@@ -23,6 +23,7 @@ import sprintRoutes from './routes/sprint.routes';
 import initiativeRoutes from './routes/initiative.routes';
 import importRoutes from './routes/import.routes';
 import reportRoutes from './routes/report.routes';
+import implementationPlanRoutes from './routes/implementationPlan.routes';
 
 dotenv.config();
 
@@ -69,6 +70,7 @@ app.use('/api/sprints', sprintRoutes);
 app.use('/api/initiatives', initiativeRoutes);
 app.use('/api/import', importRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/plans',   implementationPlanRoutes);
 
 // Error handling
 app.use(notFound);
