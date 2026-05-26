@@ -56,8 +56,8 @@ export const getProjects = async (req: AuthRequest, res: Response, next: NextFun
       : { $or: [{ ownerId: req.user?.userId }, { memberIds: req.user?.userId }] };
 
     const projects = await Project.find(query)
-      .populate('ownerId', 'name email')
-      .populate('memberIds', 'name email')
+      .populate('ownerId', 'name email role department')
+      .populate('memberIds', 'name email role department')
       .sort({ updatedAt: -1 });
 
     res.json({ success: true, data: { projects } });
@@ -69,8 +69,8 @@ export const getProjects = async (req: AuthRequest, res: Response, next: NextFun
 export const getProjectById = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
     const project = await Project.findById(req.params.id)
-      .populate('ownerId', 'name email')
-      .populate('memberIds', 'name email');
+      .populate('ownerId', 'name email role department')
+      .populate('memberIds', 'name email role department');
 
     if (!project) return next(new AppError('Project not found', 404));
 

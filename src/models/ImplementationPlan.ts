@@ -6,6 +6,8 @@ export interface ISubTask {
   assigned?: string;
   startMonth?: number | null;
   endMonth?: number | null;
+  startWeek?: number | null;
+  endWeek?: number | null;
 }
 
 export interface IPlanTask {
@@ -15,6 +17,8 @@ export interface IPlanTask {
   assigned?: string;
   startMonth?: number | null;
   endMonth?: number | null;
+  startWeek?: number | null;
+  endWeek?: number | null;
   subtasks: ISubTask[];
 }
 
@@ -41,6 +45,8 @@ const subTaskSchema = new Schema<ISubTask>(
     assigned:    { type: String, default: '' },
     startMonth:  { type: Number, default: null },
     endMonth:    { type: Number, default: null },
+    startWeek:   { type: Number, default: null },
+    endWeek:     { type: Number, default: null },
   },
   { _id: false }
 );
@@ -53,6 +59,8 @@ const planTaskSchema = new Schema<IPlanTask>(
     assigned:    { type: String, default: '' },
     startMonth:  { type: Number, default: null },
     endMonth:    { type: Number, default: null },
+    startWeek:   { type: Number, default: null },
+    endWeek:     { type: Number, default: null },
     subtasks:    { type: [subTaskSchema], default: [] },
   },
   { _id: false }

@@ -12,6 +12,8 @@ const subTaskSchema = z.object({
   assigned:    z.string().optional(),
   startMonth:  z.number().int().min(1).max(36).nullable().optional(),
   endMonth:    z.number().int().min(1).max(36).nullable().optional(),
+  startWeek:   z.number().int().min(1).max(156).nullable().optional(),
+  endWeek:     z.number().int().min(1).max(156).nullable().optional(),
 });
 
 const planTaskSchema = z.object({
@@ -21,6 +23,8 @@ const planTaskSchema = z.object({
   assigned:    z.string().optional(),
   startMonth:  z.number().int().min(1).max(36).nullable().optional(),
   endMonth:    z.number().int().min(1).max(36).nullable().optional(),
+  startWeek:   z.number().int().min(1).max(156).nullable().optional(),
+  endWeek:     z.number().int().min(1).max(156).nullable().optional(),
   subtasks:    z.array(subTaskSchema).optional(),
 });
 
