@@ -44,7 +44,7 @@ const reorderSchema = z.object({
   tasks: z.array(z.object({ id: z.string(), order: z.number(), status: z.string() })),
 });
 
-const PRIVILEGED_ROLES = ['Admin', 'Project Manager'];
+const PRIVILEGED_ROLES = ['Admin', 'Project Manager', 'Lead Team'];
 
 export const getTasks = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -73,8 +73,11 @@ export const getTasks = async (req: AuthRequest, res: Response, next: NextFuncti
     const isPrivileged = PRIVILEGED_ROLES.includes(req.user?.role ?? '');
 
     if (isPrivileged) {
-      // Admin / Project Manager: can filter by any member or see all
-      if (assigneeId) filter.assigneeId = assigneeId;
+      // Privileged roles: can filter by one or many assignees (comma-separated IDs)
+      if (assigneeId) {
+        const ids = String(assigneeId).split(',').map((s) => s.trim()).filter(Boolean);
+        filter.assigneeId = ids.length === 1 ? ids[0] : { $in: ids };
+      }
     } else {
       // All other roles: see only their own assigned tasks
       filter.assigneeId = req.user?.userId;
